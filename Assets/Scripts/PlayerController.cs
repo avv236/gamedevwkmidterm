@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	bool sittingUp = false;
+	bool leggiesOut = false;
 
 	public GameObject rLeg;
 	public GameObject lLeg;
@@ -31,13 +32,19 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		//MOVING LEGS SECTION
+		if (leggiesOut == false){
+			if(Input.GetKeyDown(KeyCode.RightArrow) && sittingUp == true){
+				rLeg.transform.Rotate(0f, 10f, 0f);
+			}
 
-		if(Input.GetKeyDown(KeyCode.RightArrow) && sittingUp == true){
-			rLeg.transform.Rotate(0f, 10f, 0f);
-		}
-
-		if(Input.GetKeyDown(KeyCode.UpArrow) && sittingUp == true){
-			lLeg.transform.Rotate(0f, 10f, 0f);
+			if(Input.GetKeyDown(KeyCode.UpArrow) && sittingUp == true){
+				lLeg.transform.Rotate(0f, 10f, 0f);
+			}
+			/*
+			if(rLeg.transform.localEulerAngles.y && 
+				rLeg.transform.localEulerAngles.y < 90f){
+				leggiesOut = true;
+			}*/
 		}
 	}
 }

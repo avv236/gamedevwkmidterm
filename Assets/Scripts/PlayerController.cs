@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour {
 			
 		if(transform.localEulerAngles.x >= 80f){
 			sittingUp = true;
-			transform.Rotate(-10f * Time.deltaTime, 0f, 0f);
+			//transform.Rotate(-10f * Time.deltaTime, 0f, 0f);
 		}
 
 		//MOVING LEGS SECTION

@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour {
 
 	bool sittingUp = false;
 	bool leggiesOut = false;
 
+    float sleepCounter = 0;
+
 	public GameObject rLeg;
 	public GameObject lLeg;
     public GameObject[] arrows = new GameObject [3];
 
+    GameObject playArrow;
     int arrowCount = 0;
     int arrowMax = 1;
 
@@ -22,79 +27,87 @@ public class PlayerController : MonoBehaviour {
 
     void arrowSpawn(){
         int whichArrow = Random.Range(0, 3);
-        Vector3 arrowPos = new Vector3(-3f, 15f, 0f);
-        GameObject pressArrow = Instantiate( arrows[whichArrow], arrowPos, Quaternion.identity ) as GameObject;
-
-        //for (int i = 0; i < 1; i++) ;
         
+        Vector3 arrowPos = Camera.main.transform.position + Camera.main.transform.forward * 7f;
+        playArrow = Instantiate( arrows[whichArrow], arrowPos, Camera.main.transform.rotation ) as GameObject;
+        playArrow.transform.parent = transform;
     }
-	
-	// Update is called once per frame
 
-  
-	void Update () {
+    void Update()
+    {
+        GameObject Response = GameObject.FindWithTag("arrow");
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && arrows[0] && sittingUp == false)
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && playArrow.name == "LEFTARROW(Clone)" && sittingUp == false)
         {
-            transform.Rotate(10f, 0f, 0f);
             Destroy(GameObject.FindWithTag("arrow"));
+            transform.Rotate(10f, 0f, 0f);
             arrowSpawn();
             Debug.Log("YOU PRESSED LEFT CORRECTLY");
-
+            if ( Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) )
+            {
+                transform.Rotate(-50f, 0f, 0f);
+            }
         }
-        else
-            Debug.Log("WRONG");
 
-     /*   if (Input.GetKeyDown(KeyCode.UpArrow) && arrows[1] && sittingUp == false)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && playArrow.name == "UPARROW(Clone)" && sittingUp == false)
         {
             Destroy(GameObject.FindWithTag("arrow"));
+            transform.Rotate(10f, 0f, 0f);
             arrowSpawn();
             Debug.Log("YOU PRESSED UP CORRECTLY");
 
+            if ( Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) )
+            {
+                transform.Rotate(-50f, 0f, 0f);
+            } 
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) && arrows[2] && sittingUp == false)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && playArrow.name == "RIGHTARROW(Clone)" && sittingUp == false)
         {
             Destroy(GameObject.FindWithTag("arrow"));
+            transform.Rotate(10f, 0f, 0f);
             arrowSpawn();
             Debug.Log("YOU PRESSED RIGHT CORRECTLY");
 
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                transform.Rotate(-50f, 0f, 0f);
+            }
+        }
+
+        //FAIL COUNTER
+        if (transform.localRotation.x <=4.9f && transform.localRotation.x >= 4.7f){
+            sleepCounter++;
+        }
+
+        if (sleepCounter >= 50)
+        {
+            Debug.Log("FELL ASLEEP AGAIN");
         }
         
-        */
-
-
-
-
 
         // SITTING UP SECTION
-        if (Input.GetKeyDown(KeyCode.Space) && sittingUp == false ){
-			transform.Rotate(15f, 0f, 0f);
-		}
+        if (transform.localEulerAngles.x >= 80f)
+        {
+            sittingUp = true;
+            Debug.Log("SITTING UP");
+            Destroy(GameObject.FindWithTag("arrow"));
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
 
-		if(sittingUp == false && transform.localEulerAngles.x > 5f){
-			transform.Rotate(-10f * Time.deltaTime, 0f, 0f);
-		}
-			
-		if(transform.localEulerAngles.x >= 80f){
-			sittingUp = true;
-			//transform.Rotate(-10f * Time.deltaTime, 0f, 0f);
-		}
+       /* //MOVING LEGS SECTION
+        if (leggiesOut == false)
+        {
+            if (Input.GetKeyDown(KeyCode.D) && sittingUp == true)
+            {
+                rLeg.transform.Rotate(0f, 10f, 0f);
+            }
 
-		//MOVING LEGS SECTION
-		if (leggiesOut == false){
-			if(Input.GetKeyDown(KeyCode.RightArrow) && sittingUp == true){
-				rLeg.transform.Rotate(0f, 10f, 0f);
-			}
+            if (Input.GetKeyDown(KeyCode.A) && sittingUp == true)
+            {
+                lLeg.transform.Rotate(0f, 10f, 0f);
+            }
+        } */
+      }
+    }
 
-			if(Input.GetKeyDown(KeyCode.UpArrow) && sittingUp == true){
-				lLeg.transform.Rotate(0f, 10f, 0f);
-			}
-			/*
-			if(rLeg.transform.localEulerAngles.y && 
-				rLeg.transform.localEulerAngles.y < 90f){
-				leggiesOut = true;
-			}*/
-		}
-	}
-}

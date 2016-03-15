@@ -13,7 +13,7 @@ public class Instructions : MonoBehaviour {
     }
 	void Update () {
         timer += Time.deltaTime;
-        if (timer > 8f)
+        if (timer > 12f)
         {
             Debug.Log(timer);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

@@ -5,9 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
-	bool sittingUp = false;
-	bool leggiesOut = false;
+    public AudioClip popSound;
+    public AudioClip errorSound;
+    public AudioSource pop;
+    public AudioSource error;
 
+	bool sittingUp = false;
+	
     float sleepCounter = 0;
 
 	public GameObject rLeg;
@@ -35,52 +39,71 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
+        
+
         GameObject Response = GameObject.FindWithTag("arrow");
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && playArrow.name == "LEFTARROW(Clone)" && sittingUp == false)
+        if (playArrow.name.Contains("LEFT") && sittingUp == false)
         {
-            Destroy(GameObject.FindWithTag("arrow"));
-            transform.Rotate(10f, 0f, 0f);
-            arrowSpawn();
-            Debug.Log("YOU PRESSED LEFT CORRECTLY");
-            if ( Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow) )
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                transform.Rotate(-50f, 0f, 0f);
+                pop.PlayOneShot(pop.clip, 0.5f);
+                Destroy(GameObject.FindWithTag("arrow"));
+                transform.Rotate(5f, 0f, 0f);
+                arrowSpawn();
+                Debug.Log("YOU PRESSED LEFT CORRECTLY");
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                error.PlayOneShot(error.clip, 0.5f);
+                Debug.Log("Up Arrow Error");
+                transform.rotation = Quaternion.identity;
+                sleepCounter++;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && playArrow.name == "UPARROW(Clone)" && sittingUp == false)
+        else if (playArrow.name == "UPARROW(Clone)" && sittingUp == false)
         {
-            Destroy(GameObject.FindWithTag("arrow"));
-            transform.Rotate(10f, 0f, 0f);
-            arrowSpawn();
-            Debug.Log("YOU PRESSED UP CORRECTLY");
-
-            if ( Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) )
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                transform.Rotate(-50f, 0f, 0f);
+                pop.PlayOneShot(pop.clip, 0.5f);
+                Destroy(GameObject.FindWithTag("arrow"));
+                transform.Rotate(5f, 0f, 0f);
+                arrowSpawn();
+                Debug.Log("YOU PRESSED UP CORRECTLY");
+            }
+
+            else if ( Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) )
+            {
+                error.PlayOneShot(error.clip, 0.5f);
+                Debug.Log("Left Arrow Error");
+                transform.rotation = Quaternion.identity;
+                sleepCounter++;
             } 
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) && playArrow.name == "RIGHTARROW(Clone)" && sittingUp == false)
+        else if (playArrow.name == "RIGHTARROW(Clone)" && sittingUp == false)
         {
-            Destroy(GameObject.FindWithTag("arrow"));
-            transform.Rotate(10f, 0f, 0f);
-            arrowSpawn();
-            Debug.Log("YOU PRESSED RIGHT CORRECTLY");
-
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                transform.Rotate(-50f, 0f, 0f);
+                pop.PlayOneShot(pop.clip, 0.5f);
+                Destroy(GameObject.FindWithTag("arrow"));
+                transform.Rotate(5f, 0f, 0f);
+                arrowSpawn();
+                Debug.Log("YOU PRESSED RIGHT CORRECTLY");
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                Debug.Log("Right Arrow Error");
+                error.PlayOneShot(error.clip, 0.5f);
+                transform.rotation = Quaternion.identity;
+                sleepCounter++;
             }
         }
 
         //FAIL COUNTER
-        if (transform.localRotation.x <=4.9f && transform.localRotation.x >= 4.7f){
-            sleepCounter++;
-        }
 
-        if (sleepCounter >= 50)
+        if (sleepCounter >= 30)
         {
             Debug.Log("FELL ASLEEP AGAIN");
         }
